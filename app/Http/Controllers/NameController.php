@@ -24,6 +24,7 @@ class NameController extends Controller
         Name::create([
             'name' => $request->name,
         ]);
+        
 
         return response()->json(['message' => 'Name has been saved successfully!']);
     }

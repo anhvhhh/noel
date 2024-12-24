@@ -24,8 +24,3 @@ Route::middleware([
     })->name('dashboard');
 });
 
-
-Route::get('/get-name', [NameController::class, 'get'])
-    ->name('get.name');
-Route::post('/sent-name', [NameController::class, 'sent'])
-    ->name('sent.name');

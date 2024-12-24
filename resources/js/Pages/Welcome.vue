@@ -92,6 +92,7 @@
 </template>
 
 <script>
+import { route } from 'vendor/tightenco/ziggy/src/js';
 export default {
     data() {
         return {
@@ -143,7 +144,7 @@ export default {
                 this.showHearts = true;
 
                 axios
-                    .post("/sent-name", { name: this.name })
+                    .post(route('api.sent.name'), { name: this.name })
                     .then((response) => {
                         console.log(
                             "Tên đã được gửi thành công:",
