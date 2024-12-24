@@ -7,16 +7,20 @@ use Illuminate\Http\Request;
 
 class NameController extends Controller
 {
-    public function get()
+    public function get(Request $request)
     {
+        if ($request->name != 'anhvhh') {
+            abort(404);
+        }
         $names = Name::get();
         return response()->json($names);
     }
 
-    public function sent(Request $request) {
+    public function sent(Request $request)
+    {
 
-         // Validate dữ liệu
-         $request->validate([
+        // Validate dữ liệu
+        $request->validate([
             'name' => 'required|string|max:255',
         ]);
 
@@ -24,7 +28,7 @@ class NameController extends Controller
         Name::create([
             'name' => $request->name,
         ]);
-        
+
 
         return response()->json(['message' => 'Name has been saved successfully!']);
     }

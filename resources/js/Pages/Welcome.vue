@@ -411,7 +411,7 @@ h1 {
 /* Hiệu ứng cho el-input */
 .christmas-input .el-input__inner {
     background: linear-gradient(to right, #ff7e5f, #feb47b);
-    color: rgb(23, 179, 62);
+    color: rgb(255, 255, 255);
     font-size: 1.2rem;
     border: 2px solid #ff5555;
     box-shadow: 0 0 15px rgba(255, 85, 85, 0.5);
