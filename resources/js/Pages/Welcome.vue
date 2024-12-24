@@ -92,7 +92,7 @@
 </template>
 
 <script>
-import { route } from 'vendor/tightenco/ziggy/src/js';
+import axios from 'axios';
 export default {
     data() {
         return {
