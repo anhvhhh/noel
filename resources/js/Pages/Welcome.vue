@@ -144,7 +144,7 @@ export default {
                 this.showHearts = true;
 
                 axios
-                    .post('/sent-name', { name: this.name })
+                    .post('/api/sent-name', { name: this.name })
                     .then((response) => {
                         console.log(
                             "Tên đã được gửi thành công:",
