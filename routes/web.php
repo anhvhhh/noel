@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\NameController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -22,3 +23,9 @@ Route::middleware([
         return Inertia::render('Dashboard');
     })->name('dashboard');
 });
+
+
+Route::get('/get-name', [NameController::class, 'get'])
+    ->name('get.name');
+Route::post('/sent-name', [NameController::class, 'sent'])
+    ->name('sent.name');

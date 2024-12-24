@@ -1,15 +1,26 @@
 <template>
     <div>
         <div v-if="!showChristmas">
-            <h1>Hoàng Anh Pro ?</h1>
-            <div class="buttons-container">
-                <!-- Nút "Có" -->
-                <button class="yes-button" @click="handleYesClick">Có</button>
+            <h1>Nhập tên của bạn để nhận lời chúc từ Hoàng Anh đáng yêu 💘</h1>
+            <div class="christmas-input-container">
+                <el-input
+                    v-model="name"
+                    placeholder="Nhập tên của bạn..."
+                    class="christmas-input"
+                >
+                </el-input>
+                <el-button class="christmas-send-btn" @click="sendGreeting">
+                    Gửi
+                </el-button>
+                <div v-if="showHearts" class="heart-container">
+                    <span class="heart" v-for="index in 5" :key="index"
+                        >❤️</span
+                    >
+                </div>
 
-                <!-- Nút "Không" -->
-                <button class="no-button" :style="noButtonStyle" @mouseover="moveNoButton">
-                    Không
-                </button>
+                <span v-if="greeting" class="christmas-greeting"
+                    >🎄 {{ greeting }} 🎁</span
+                >
             </div>
         </div>
 
@@ -17,17 +28,31 @@
             <!-- Hiệu ứng Giáng Sinh -->
             <h1>Merry Christmas!</h1>
             <p>Chúc bạn Giáng Sinh vui vẻ!</p>
-            <div class="snowflake" v-for="n in 30" :key="n" :style="generateSnowflakeStyle()"></div>
+            <div
+                class="snowflake"
+                v-for="n in 30"
+                :key="n"
+                :style="generateSnowflakeStyle()"
+            ></div>
             <audio autoplay loop>
                 <source src="/noel.mp3" type="audio/mp3" />
-                Trình duyệt của bạn không hỗ trợ âm thanh.
             </audio>
             <!-- Background with snowflakes -->
-            <div class="snowflake" v-for="flake in snowflakes" :key="flake.id" :style="flake.style"></div>
+            <div
+                class="snowflake"
+                v-for="flake in snowflakes"
+                :key="flake.id"
+                :style="flake.style"
+            ></div>
 
             <!-- Fireworks -->
             <div class="fireworks">
-                <div v-for="firework in fireworks" :key="firework.id" class="firework" :style="firework.style"></div>
+                <div
+                    v-for="firework in fireworks"
+                    :key="firework.id"
+                    class="firework"
+                    :style="firework.style"
+                ></div>
             </div>
 
             <!-- Santa Claus and Sleigh -->
@@ -37,14 +62,17 @@
 
             <!-- Christmas tree with twinkling lights -->
             <div class="christmas-tree">
-                <ul class="tree-lights">
-                    <li v-for="light in 50" :key="light" class="tree-light"></li>
-                </ul>
+                <el-image src="/cac.png"></el-image>
             </div>
 
             <!-- Falling gifts -->
             <div class="falling-gifts">
-                <div v-for="gift in gifts" :key="gift.id" class="gift" :style="gift.style"></div>
+                <div
+                    v-for="gift in gifts"
+                    :key="gift.id"
+                    class="gift"
+                    :style="gift.style"
+                ></div>
             </div>
 
             <!-- Decorative lights -->
@@ -68,12 +96,6 @@ export default {
     data() {
         return {
             showChristmas: false, // Hiển thị màn hình Giáng Sinh
-            noButtonStyle: {
-                position: "absolute",
-                top: "50%",
-                left: "50%",
-                transform: "translate(-50%, -50%)",
-            },
             snowflakes: Array.from({ length: 50 }, (_, id) => ({
                 id,
                 style: {
@@ -98,16 +120,14 @@ export default {
                     animationDuration: `${4 + Math.random() * 5}s`,
                 },
             })),
+            name: "",
+            greeting: "",
+            showHearts: false,
         };
     },
     methods: {
         handleYesClick() {
             this.showChristmas = true; // Chuyển sang màn hình Giáng Sinh
-        },
-        moveNoButton() {
-            // Thay đổi vị trí nút "Không"
-            this.noButtonStyle.top = `${Math.random() * 80 + 10}%`;
-            this.noButtonStyle.left = `${Math.random() * 80 + 10}%`;
         },
         generateSnowflakeStyle() {
             // Tạo hiệu ứng bông tuyết rơi
@@ -117,6 +137,32 @@ export default {
                 animationDelay: `${Math.random() * 2}s`,
             };
         },
+        sendGreeting() {
+            if (this.name.trim()) {
+                this.greeting = `Xin chào, ${this.name}! Chúc bạn Giáng Sinh an lành!`;
+                this.showHearts = true;
+
+                axios
+                    .post("/sent-name", { name: this.name })
+                    .then((response) => {
+                        console.log(
+                            "Tên đã được gửi thành công:",
+                            response.data
+                        );
+                    })
+                    .catch((error) => {
+                        console.error("Lỗi khi gửi tên:", error);
+                    });
+
+                // Hiện trái tim trước và sau 3 giây hiện lời chào Giáng Sinh
+                setTimeout(() => {
+                    this.showHearts = false;
+                    this.showChristmas = true;
+                }, 2000);
+            } else {
+                this.greeting = "Vui lòng nhập tên trước khi gửi!";
+            }
+        },
     },
 };
 </script>
@@ -125,14 +171,14 @@ export default {
 /* Kiểu chữ */
 h1 {
     text-align: center;
-    font-size: 3rem;
+    font-size: 20px;
     color: #ff5555;
     margin-top: 50px;
+    font-weight: bold;
 }
 
 /* Container nút */
 .buttons-container {
-    display: flex;
     justify-content: center;
     margin-top: 50px;
 }
@@ -198,6 +244,7 @@ h1 {
         transform: translateY(110vh);
     }
 }
+
 .christmas-container {
     position: relative;
     width: 100%;
@@ -302,11 +349,10 @@ h1 {
 /* Christmas tree styling */
 .christmas-tree {
     position: relative;
-    width: 200px;
-    height: 300px;
+    width: 500px;
+    height: 500px;
     margin-top: 20px;
     clip-path: polygon(50% 0, 100% 100%, 0 100%);
-    background: #0a2;
     box-shadow: 0 0 20px #0a2;
     z-index: 5;
 }
@@ -343,5 +389,110 @@ h1 {
         opacity: 1;
     }
 }
+</style>
 
+<!-- input name  -->
+<style>
+.el-input__wrapper {
+    padding: 0 !important;
+}
+/* Container tổng thể */
+.christmas-input-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 50px;
+    padding: 0 20px;
+    gap: 3rem;
+    justify-content: center;
+}
+
+/* Hiệu ứng cho el-input */
+.christmas-input .el-input__inner {
+    background: linear-gradient(to right, #ff7e5f, #feb47b);
+    color: rgb(23, 179, 62);
+    font-size: 1.2rem;
+    border: 2px solid #ff5555;
+    box-shadow: 0 0 15px rgba(255, 85, 85, 0.5);
+    transition: all 0.3s ease;
+    padding: 0 5px !important;
+}
+
+.christmas-input .el-input__inner::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+    font-style: italic;
+}
+
+.christmas-input .el-input__inner:focus {
+    background: linear-gradient(to right, #43cea2, #185a9d);
+    border-color: #33ccff;
+    box-shadow: 0 0 20px rgba(51, 204, 255, 0.8);
+}
+
+/* Hiệu ứng cho nút gửi */
+.christmas-send-btn {
+    background: linear-gradient(to right, #11eb40, #6bf50f);
+    color: white !important;
+    font-weight: bold;
+    font-size: 1rem;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(75, 238, 34, 0.6);
+    transition: all 0.3s ease;
+}
+
+.christmas-send-btn:hover {
+    background: linear-gradient(to right, #ff9068, #fd746c);
+    box-shadow: 0 0 15px rgba(255, 144, 104, 0.8);
+}
+
+.christmas-send-btn:focus {
+    outline: none;
+}
+
+/* Hiệu ứng cho thông báo chào */
+.christmas-greeting {
+    margin-top: 20px;
+    font-size: 1.5rem;
+    color: #ff5555;
+    font-weight: bold;
+    animation: fadeIn 1s ease-in-out;
+    text-align: center;
+}
+
+/* Hiệu ứng động */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .christmas-input-container {
+        padding: 0 10px;
+    }
+
+    .christmas-greeting {
+        font-size: 1.2rem;
+    }
+
+    .christmas-input .el-input__inner {
+        font-size: 1rem;
+        padding: 8px;
+    }
+
+    .christmas-send-btn {
+        font-size: 0.9rem;
+        padding: 8px 15px;
+    }
+}
 </style>
