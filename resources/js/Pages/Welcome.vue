@@ -1,73 +1,65 @@
 <template>
-    <div v-if="show === false">
-        <div class="container">
-            <!-- Chữ Hoàng Anh Pro -->
-            <div class="text-center">Hoàng Anh Pro</div>
-
-            <!-- Các nút -->
+    <div>
+        <div v-if="!showChristmas">
+            <h1>Hoàng Anh Pro ?</h1>
             <div class="buttons-container">
-                <!-- Nút Có -->
-                <button v-if="!isDisabled" @click="handleYesClick" class="yes-button">
-                    Có
-                </button>
+                <!-- Nút "Có" -->
+                <button class="yes-button" @click="handleYesClick">Có</button>
 
-                <!-- Nút Không -->
-                <button v-if="!isNoClicked && !isDisabled" @click="handleNoClick" class="no-button">
-                    Không
-                </button>
-
-                <!-- Nút Không bị ẩn khi đã nhấn -->
-                <button v-if="isNoClicked" class="no-button-moved" :style="noButtonPosition">
+                <!-- Nút "Không" -->
+                <button class="no-button" :style="noButtonStyle" @mouseover="moveNoButton">
                     Không
                 </button>
             </div>
         </div>
-    </div>
-    <div v-if="show === true" class="christmas-container">
-        <!-- Background with snowflakes -->
-        <div class="snowflake" v-for="flake in snowflakes" :key="flake.id" :style="flake.style"></div>
 
-        <!-- Fireworks -->
-        <div class="fireworks">
-            <div v-for="firework in fireworks" :key="firework.id" class="firework" :style="firework.style"></div>
-        </div>
-
-        <!-- Santa Claus and Sleigh -->
-        <div class="santa-sleigh">
-            <img src="/noel.png" alt="Santa and Sleigh" />
-        </div>
-
-        <!-- Christmas tree with twinkling lights -->
-        <div class="christmas-tree">
-            <ul class="tree-lights">
-                <li v-for="light in 50" :key="light" class="tree-light"></li>
-            </ul>
-        </div>
-
-        <!-- Central message -->
-        <div class="message">
+        <div v-else class="christmas-container">
+            <!-- Hiệu ứng Giáng Sinh -->
             <h1>Merry Christmas!</h1>
-            <p>May your holidays be filled with joy and love.</p>
-        </div>
-
-        <!-- Falling gifts -->
-        <div class="falling-gifts">
-            <div v-for="gift in gifts" :key="gift.id" class="gift" :style="gift.style"></div>
-        </div>
-
-        <!-- Decorative lights -->
-        <ul class="string-lights">
-            <li v-for="light in 20" :key="light" class="light"></li>
-        </ul>
-
-        <!-- Christmas music -->
-        <div class="mt-3">
-            <audio controls autoplay>
+            <p>Chúc bạn Giáng Sinh vui vẻ!</p>
+            <div class="snowflake" v-for="n in 30" :key="n" :style="generateSnowflakeStyle()"></div>
+            <audio autoplay loop>
                 <source src="/noel.mp3" type="audio/mp3" />
-                Your browser does not support the audio tag.
+                Trình duyệt của bạn không hỗ trợ âm thanh.
             </audio>
-        </div>
+            <!-- Background with snowflakes -->
+            <div class="snowflake" v-for="flake in snowflakes" :key="flake.id" :style="flake.style"></div>
 
+            <!-- Fireworks -->
+            <div class="fireworks">
+                <div v-for="firework in fireworks" :key="firework.id" class="firework" :style="firework.style"></div>
+            </div>
+
+            <!-- Santa Claus and Sleigh -->
+            <div class="santa-sleigh">
+                <img src="/noel.png" alt="Santa and Sleigh" />
+            </div>
+
+            <!-- Christmas tree with twinkling lights -->
+            <div class="christmas-tree">
+                <ul class="tree-lights">
+                    <li v-for="light in 50" :key="light" class="tree-light"></li>
+                </ul>
+            </div>
+
+            <!-- Falling gifts -->
+            <div class="falling-gifts">
+                <div v-for="gift in gifts" :key="gift.id" class="gift" :style="gift.style"></div>
+            </div>
+
+            <!-- Decorative lights -->
+            <ul class="string-lights">
+                <li v-for="light in 20" :key="light" class="light"></li>
+            </ul>
+
+            <!-- Christmas music -->
+            <div class="mt-3">
+                <audio controls autoplay>
+                    <source src="/noel.mp3" type="audio/mp3" />
+                    Your browser does not support the audio tag.
+                </audio>
+            </div>
+        </div>
     </div>
 </template>
 
@@ -75,6 +67,13 @@
 export default {
     data() {
         return {
+            showChristmas: false, // Hiển thị màn hình Giáng Sinh
+            noButtonStyle: {
+                position: "absolute",
+                top: "50%",
+                left: "50%",
+                transform: "translate(-50%, -50%)",
+            },
             snowflakes: Array.from({ length: 50 }, (_, id) => ({
                 id,
                 style: {
@@ -99,36 +98,23 @@ export default {
                     animationDuration: `${4 + Math.random() * 5}s`,
                 },
             })),
-            show: false,
-            isDisabled: false,  // Để kiểm soát việc nhấn nút
-            isNoClicked: false,  // Để xác định khi nhấn nút Không
-            noButtonPosition: {
-                position: 'absolute',
-                top: `${Math.random() * 80}vh`,  // Random vị trí Y
-                left: `${Math.random() * 80}vw`, // Random vị trí X
-            },
         };
-    },
-    mounted() {
-        // Automatically play the audio when the component is loaded
-        const audio = this.$refs.audio;
-        if (audio) {
-            audio.play().catch((e) => {
-                console.warn('Autoplay failed. User interaction may be required.', e);
-            });
-        }
     },
     methods: {
         handleYesClick() {
-            this.show = true  // Log 1 khi nhấn vào nút Có
-            this.isDisabled = true;  // Vô hiệu hóa các nút sau khi nhấn
+            this.showChristmas = true; // Chuyển sang màn hình Giáng Sinh
         },
-        handleNoClick() {
-            this.isNoClicked = true;  // Đánh dấu nút Không đã nhấn
-            this.noButtonPosition = {
-                position: 'absolute',
-                top: `${Math.random() * 90}vh`,  // Cập nhật vị trí ngẫu nhiên mới
-                left: `${Math.random() * 90}vw`, // Vị trí ngẫu nhiên mới
+        moveNoButton() {
+            // Thay đổi vị trí nút "Không"
+            this.noButtonStyle.top = `${Math.random() * 80 + 10}%`;
+            this.noButtonStyle.left = `${Math.random() * 80 + 10}%`;
+        },
+        generateSnowflakeStyle() {
+            // Tạo hiệu ứng bông tuyết rơi
+            return {
+                left: `${Math.random() * 100}vw`,
+                animationDuration: `${Math.random() * 3 + 2}s`,
+                animationDelay: `${Math.random() * 2}s`,
             };
         },
     },
@@ -136,7 +122,82 @@ export default {
 </script>
 
 <style scoped>
-/* Container styling */
+/* Kiểu chữ */
+h1 {
+    text-align: center;
+    font-size: 3rem;
+    color: #ff5555;
+    margin-top: 50px;
+}
+
+/* Container nút */
+.buttons-container {
+    display: flex;
+    justify-content: center;
+    margin-top: 50px;
+}
+
+/* Nút "Có" */
+.yes-button {
+    background-color: #4caf50;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+    margin-right: 20px;
+}
+
+.yes-button:hover {
+    background-color: #45a049;
+}
+
+/* Nút "Không" */
+.no-button {
+    background-color: #f44336;
+    color: white;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1.2rem;
+    cursor: pointer;
+}
+
+.no-button:hover {
+    background-color: #e53935;
+}
+
+/* Hiệu ứng Giáng Sinh */
+.christmas-container {
+    text-align: center;
+    background: linear-gradient(to bottom, #002244, #0055aa);
+    color: white;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Bông tuyết */
+.snowflake {
+    position: absolute;
+    top: -5%;
+    width: 10px;
+    height: 10px;
+    background: white;
+    border-radius: 50%;
+    animation: snowFall linear infinite;
+}
+
+@keyframes snowFall {
+    to {
+        transform: translateY(110vh);
+    }
+}
 .christmas-container {
     position: relative;
     width: 100%;
@@ -283,136 +344,4 @@ export default {
     }
 }
 
-/* Message styling */
-.message h1 {
-    font-size: 3rem;
-    margin: 0;
-    text-shadow: 0 0 10px #fff, 0 0 20px #ff0000, 0 0 30px #ff0000;
-}
-
-.message p {
-    font-size: 1.2rem;
-    margin-top: 10px;
-    text-shadow: 0 0 5px #fff, 0 0 15px #00ff00;
-}
-
-/* Decorative string lights */
-.string-lights {
-    position: absolute;
-    top: 0;
-    width: 100%;
-    display: flex;
-    justify-content: space-evenly;
-    padding: 0;
-    margin: 0;
-    z-index: 2;
-}
-
-.string-lights .light {
-    width: 15px;
-    height: 15px;
-    background: radial-gradient(circle, #ff0, #ffa500);
-    border-radius: 50%;
-    animation: twinkle 1s infinite ease-in-out alternate;
-}
-
-.string-lights .light:nth-child(even) {
-    animation-delay: 0.5s;
-}
-
-@keyframes twinkle {
-    0% {
-        opacity: 1;
-    }
-
-    100% {
-        opacity: 0.3;
-    }
-}
-
-/* Falling gifts styling */
-.falling-gifts {
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    pointer-events: none;
-    z-index: 1;
-}
-
-.gift {
-    position: absolute;
-    width: 30px;
-    height: 30px;
-    background: linear-gradient(to bottom, #d00, #a00);
-    box-shadow: 0 0 10px #f00;
-    border-radius: 5px;
-    animation: gift-fall linear infinite;
-}
-
-@keyframes gift-fall {
-    0% {
-        transform: translateY(-10vh) rotate(0);
-    }
-
-    100% {
-        transform: translateY(110vh) rotate(360deg);
-    }
-}
-
-/* Styling for the buttons */
-.buttons-container {
-    position: relative;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5rem
-}
-
-button {
-    padding: 10px 20px;
-    font-size: 1.5rem;
-    cursor: pointer;
-}
-
-.yes-button {
-    background-color: #4CAF50;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-.no-button {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 5px;
-}
-
-.no-button-moved {
-    background-color: #f44336;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    pointer-events: none;
-    /* Vô hiệu hóa sự kiện click */
-}
-
-.text-center {
-    font-size: 3rem;
-    font-weight: bold;
-    color: #2c3e50;
-    text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.1);
-    margin-bottom: 50px;
-}
-.container {
-  position: relative;
-  width: 100%;
-  height: 100vh;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  background-color: #f0f0f0; /* Màu nền */
-}
 </style>
