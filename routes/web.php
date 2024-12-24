@@ -14,13 +14,8 @@ Route::get('/', function () {
     ]);
 });
 
-Route::middleware([
-    'auth:sanctum',
-    config('jetstream.auth_session'),
-    'verified',
-])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
-});
+Route::get('/get-name', [NameController::class, 'get'])
+    ->name('get.name');
+Route::post('/sent-name', [NameController::class, 'sent'])
+    ->name('sent.name');
 
