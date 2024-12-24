@@ -428,6 +428,7 @@ h1 {
     background: linear-gradient(to right, #43cea2, #185a9d);
     border-color: #33ccff;
     box-shadow: 0 0 20px rgba(51, 204, 255, 0.8);
+    
 }
 
 /* Hiệu ứng cho nút gửi */
